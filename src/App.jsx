@@ -6,8 +6,7 @@ function App() {
   const [users, setUsers]= useState([])
   
   useEffect(()=>{
-    fetch(`http://localhost:5000/users`
-    )
+    fetch(`http://localhost:5000/users`)
       .then(res=>res.json())
       .then(data=>setUsers(data))
   },[])
@@ -20,7 +19,22 @@ function App() {
     const email= form.email.value;
     const phone= form.phone.value;
     const user= {name, age, email, phone}
-    console.log(name, age, email, phone)
+    console.log(user)
+    fetch(`http://localhost:5000/users`,{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(user)
+    },
+    )
+    .then(res=> res.json())
+    .then(data=> {
+      console.log(data)
+      const newUsers= [...users, data]
+      setUsers(newUsers)
+      form.reset()
+    })
   }
   return (
     <div>
@@ -36,7 +50,7 @@ function App() {
 
       <div>
         {
-        users.map(user=> <li>{user.name} {user.age} {user.email} {user.phone} </li>)
+        users.map(user=> <li key={user.id}> {user.name} {user.age} {user.email} {user.phone} </li>)
         }
       </div>
 
